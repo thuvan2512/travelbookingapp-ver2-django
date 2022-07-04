@@ -1,0 +1,236 @@
+{% extends 'admin/base_site.html' %}
+{% block title %} tours statistics {% endblock%}
+{% block branding %}
+<h1 id="site-name" xmlns="http://www.w3.org/1999/html"><a href="">{{ site_header|default:_('TRAVEL AGENCY STATISTICS PAGE') }}</a></h1>
+{% endblock %}
+{% block breadcrumbs %}
+{%endblock%}
+{% block content %}
+<div class="container">
+    <h1 class="text-danger">Thống kê tổng quan</h1>
+    <script src="../../static/js/scripts.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <h3 class="text-info">Tổng số địa điểm du lịch: <span style="color:red">{{ attraction_total}} </span></h3>
+    <h3 class="text-info">Tổng số tour khai thác: <span style="color:red">{{ tour_total}} </span></h3>
+    <h3 class="text-info"> Số lượng các đơn đặt tour trong năm {{current_year}}:<span style="color: red"> {{booking_total}}</span>
+    </h3>
+    <h3 class="text-info"> Số lượng các hóa đơn đã thanh toán trong năm {{current_year}}:<span style="color: red"> {{bill_paid_total}}</span>
+    </h3>
+    <div>
+        <div class="js">
+            <script>
+        $(function () {
+            var ctx = document.getElementById('tour_bar').getContext('2d');
+            var data_tour = {
+                datasets: [{
+                    data: {{data_book_tour|safe}},
+                    backgroundColor: [
+                        '#2c3e50',
+                        '#3c8dbc',
+                        '#f39c12',
+                        '#f1c40f',
+                        '#d63031',
+                        '#f56954',
+                        '#e67e22',
+                        '#8e44ad',
+                        '#1abc9c',
+                        '#3498db',
+                        '#2ecc71',
+                        '#bdc3c7',
+                    ],
+                    label:"Tần suất đặt tour theo các tháng trong năm {{current_year}}",
+                    borderWidth: 1,
+                }],
+                labels: [
+                    'January',
+                    'February',
+                    'March',
+                    'April',
+                    'May',
+                    'June',
+                    'July',
+                    'August',
+                    'September',
+                    'October',
+                    'November',
+                    'December'
+                ]
+            };
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: data_tour,
+                options: {
+                    responsive: false,
+                    maintainAspectRatio: false,
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            boxWidth: 30
+                        }
+                    }
+                }
+            });
+        });
+
+
+
+
+            </script>
+            <script>
+        $(function () {
+            var ctx_2 = document.getElementById("payment_type_stats").getContext('2d');
+            var data_2 = {
+                datasets: [{
+                    data: {{bill_paid_data}},
+                    backgroundColor: [
+                        '#636e72',
+                        '#e84393',
+                        '#3498db',
+                        '#d63031',
+                        '#2c3e50',
+                        '#1abc9c',
+                        '#3498db',
+                        '#2ecc71',
+                        '#bdc3c7',
+                    ],
+                }],
+                labels: [
+                    'By CASH',
+                    'By E-Wallet MOMO',
+                    'By E-Wallet ZALOPAY',
+                ]
+            };
+            var myDoughnutChart_2 = new Chart(ctx_2, {
+                type: 'doughnut',
+                data: data_2,
+                options: {
+                    responsive: false,
+                    maintainAspectRatio: false,
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: 30
+                        }
+                    }
+                }
+            });
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+            </script>
+        </div>
+        <div class="chars-stats">
+            <div style="">
+                <br/>
+                <canvas style="margin: 0 auto" width="400px" height="300px" id="payment_type_stats"></canvas>
+            </div>
+            <div>
+                <br/>
+                <br/>
+                <canvas style="margin: 0 auto" id="tour_bar" width="700px" height="300px"></canvas>
+                <br/>
+                <br/>
+            </div>
+            <div>
+                <div class="dropdown" style="position: inherit">
+                    <button type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split"
+                            data-toggle="dropdown">
+                        Thống Kê Doanh Thu
+                    </button>
+                    <div class="dropdown-menu" style="display:plex">
+                        <button data-toggle="modal" data-target="#by_month" class="dropdown-item">Theo Tháng</button>
+                        <button data-toggle="modal" data-target="#by_quarterly" class="dropdown-item">Theo Quý</button>
+                        <button data-toggle="modal" data-target="#by_year" class="dropdown-item">Theo Năm</button>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <br/>
+                <h1 id="title_stats" class="text-danger"></h1>
+                <h4 id="total_book_tour_stats" class="text-info"></h4>
+                <h4 id="total_bill_paid_stats" class="text-info"></h4>
+                <h4 id="total_revenue_stats" class="text-info"></h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal -->
+<div class="modal" id="by_month">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Thống kê theo tháng</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form action="" method="post">
+                    <label for="revenue_stats_month">Choose month to statistic:</label>
+                    <input type="month" id="revenue_stats_month" name="revenue_stats_month"
+                           min="2010-03" required>
+                    <button onclick="revenue_stats(1)" class="btn btn-primary" type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="by_quarterly">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Thống kê theo quý</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form action="">
+                    <label for="revenue_stats_from">From: </label>
+                    <input type="date" id="revenue_stats_from" name="revenue_stats_from" required>
+                    <label for="revenue_stats_to">To: </label>
+                    <input type="date" id="revenue_stats_to" name="revenue_stats_to" required>
+                    <button  onclick="revenue_stats(3)" type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="by_year">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Thống kê theo năm</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form action="">
+                    <label for="revenue_stats_year">Choose year to statistic:</label>
+                    <input type="number" id="revenue_stats_year" name="revenue_stats_year" min="2010" max="2080"
+                           step="1" value="2022" required/>
+                    <button onclick="revenue_stats(2)" type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
