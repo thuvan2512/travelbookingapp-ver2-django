@@ -3,7 +3,7 @@
   <img src="https://res.cloudinary.com/dec25/image/upload/v1653199820/jchyuzogke4m4mi9h2uc.jpg" alt="API for travel agency management" width="120">
 <br>
 <br>
-API for travel agency app (upload to static directory)
+API for travel agency app (upload to local storage)
 </h1>
 
 <p align="center">This is a set of API for a travel agency management application. Written in python source code</p>
